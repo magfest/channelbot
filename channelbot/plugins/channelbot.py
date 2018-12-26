@@ -17,10 +17,19 @@ def unhighlight(val):
 def at_channel(message):
     """`@channel`: Request an @channel in the current channel
     """
-    if has_perm_msg(message, 'annoy.'+message.channel._body['name']):
+    if has_perm_msg(message, 'channel.'+message.channel._body['name']):
         message.send("<!channel>")
     else:
         message.reply("You are not allowed to use @channel here. Please request a bump from @slackmods.")
+
+@listen_to('@here', re.IGNORECASE)
+def at_channel(message):
+    """`@here`: Request an @here in the current channel
+    """
+    if has_perm_msg(message, 'here.'+message.channel._body['name']):
+        message.send("<!here>")
+    else:
+        message.reply("You are not allowed to use @here in this channel. Please request a bump from @slackmods.")
 
 @respond_to('^version$', re.IGNORECASE)
 def version(message):
