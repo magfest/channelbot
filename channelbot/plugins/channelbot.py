@@ -13,23 +13,30 @@ def unhighlight(val):
         return val[:1] + "\u200D" + val[1:]
     return val
 
+@listen_to('@everyone')
+def at_everyone(message):
+   """`@everyone`: Please don't use this here.
+   """
+   message.reply("@everyone is disabled in this workspace.")
+   message.react("angry")
+
 @listen_to('@channel')
 def at_channel(message):
     """`@channel`: Request an @channel in the current channel
     """
     if has_perm_msg(message, 'channel.'+message.channel._body['name']):
-        message.send("<!channel>")
+        message.send(message.body['text'].replace("@channel", "<!channel>"))
     else:
-        message.reply("You are not allowed to use @channel here. Please request a bump from @slackmods.")
+        message.reply("@channel is disabled during the event -- if you need to notify the channel, please request assistance from the @slackmods .")
 
 @listen_to('@here')
 def at_channel(message):
     """`@here`: Request an @here in the current channel
     """
     if has_perm_msg(message, 'here.'+message.channel._body['name']):
-        message.send("<!here>")
+        message.send(message.body['text'].replace("@here", "<!here>"))
     else:
-        message.reply("You are not allowed to use @here in this channel. Please request a bump from @slackmods.")
+        message.reply("@here is disabled during the event -- if you need to notify the channel, please request assistance from the @slackmods .")
 
 @respond_to('^version$', re.IGNORECASE)
 def version(message):
