@@ -13,7 +13,7 @@ def unhighlight(val):
         return val[:1] + "\u200D" + val[1:]
     return val
 
-@listen_to('@channel', re.IGNORECASE)
+@listen_to('@channel')
 def at_channel(message):
     """`@channel`: Request an @channel in the current channel
     """
@@ -22,7 +22,7 @@ def at_channel(message):
     else:
         message.reply("You are not allowed to use @channel here. Please request a bump from @slackmods.")
 
-@listen_to('@here', re.IGNORECASE)
+@listen_to('@here')
 def at_channel(message):
     """`@here`: Request an @here in the current channel
     """
@@ -118,29 +118,27 @@ def help(message, command=None):
     if command and not help_str:
         message.reply("Help for command `" + command + "` not found.")
     else:
-        message.reply('*' + (command or 'doorbot') + '*:' + help_str)
+        message.reply('*' + (command or 'channelbot') + '*:' + help_str)
 
 @respond_to('^grant ([a-z\-_.\*]+) (?:to )<@(U\w+)>', re.IGNORECASE)
-@require_perm('grant.grant')
 def grant_permission(message, permission, user):
     """`grant <permission> to <@person>`: Grants a permission
     In order to grant a permission, you must also have that permission.
     Wildcard permission matching may be used with `*`.
     """
 
-    if has_perm_msg(message):
+    if has_perm_msg(message, 'grant.' + permission):
         grant_perm(user, permission)
         message.reply('OK, granting permission `{}`.'.format(permission))
     else:
         message.reply('Cannot grant permission you do not have')
 
 @respond_to('^revoke ([a-z\-_.\*]+) (?:from )?<@(U\w+)>', re.IGNORECASE)
-@require_perm('grant.revoke')
 def revoke_permission(message, permission, user):
     """`revoke <permission> from <@person>`: Revokes a permission
-    In order to revoke a permission, you must also have that permission.
+    In order to revoke a permission, you must have permission to grant that action.
     """
-    if has_perm_msg(message):
+    if has_perm_msg(message, 'grant.' + permission):
         if revoke_perm(user, permission):
             message.reply('OK, {} revoked'.format(permission))
         else:
