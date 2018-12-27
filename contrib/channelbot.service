@@ -1,0 +1,13 @@
+[Unit]
+Description=Connect to slack and monitor @channel usage
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/channelbot
+ExecStart=/root/channelbot/venv/bin/python -m channelbot
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
