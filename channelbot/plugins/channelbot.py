@@ -30,12 +30,12 @@ def at_channel(message):
     else:
         message.reply("@channel is disabled during the event -- if you need to notify the channel, please request assistance from the @slackmods .")
 
-@listen_to('@here')
+@listen_to('!here')
 def at_channel(message):
-    """`@here`: Request an @here in the current channel
+    """`!here`: Request an @here in the current channel
     """
     if has_perm_msg(message, 'here.'+message.channel._body['name']):
-        message.send("[from <@{}>]: ".format(message._get_user_id()) + message.body['text'].replace("@here", "<!here>", 1))
+        message.send("[from <@{}>]: ".format(message._get_user_id()) + message.body['text'].replace("!here", "<!here>", 1))
     else:
         message.reply("@here is disabled during the event -- if you need to notify the channel, please request assistance from the @slackmods .")
 
