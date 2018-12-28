@@ -40,11 +40,11 @@ def at_channel(message):
         message.reply("@here is disabled during the event -- if you need to notify the channel, please request assistance from the @slackmods .")
 
 @respond_to('^invite (.*)$', re.IGNORECASE)
+@require_perm('invite')
 def invite(message, email=None):
     """`@invite`: Send a slack invitation to someone's email
     """
-    if has_perm_msg(message, 'invite'):
-        message.send("/invite_people {}".format(email))
+    message.send("/invite_people {}".format(email))
 
 @respond_to('^version$', re.IGNORECASE)
 def version(message):
