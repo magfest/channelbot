@@ -13,6 +13,11 @@ def unhighlight(val):
         return val[:1] + "\u200D" + val[1:]
     return val
 
+@respond_to('spy')
+def spy(message):
+    message.send(":eyes:")
+    message.react("eyes")
+
 @listen_to('@everyone')
 def at_everyone(message):
    """`@everyone`: Please don't use this here.
