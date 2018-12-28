@@ -13,6 +13,10 @@ def unhighlight(val):
         return val[:1] + "\u200D" + val[1:]
     return val
 
+@listen_to('')
+def echo(message):
+    print(message.body)
+
 @listen_to('@everyone')
 def at_everyone(message):
    """`@everyone`: Please don't use this here.
