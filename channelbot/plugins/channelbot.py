@@ -20,13 +20,13 @@ def at_everyone(message):
    message.reply("@everyone is disabled in this workspace.")
    message.react("angry")
 
-@listen_to('@channel')
+@listen_to('!channel')
 def at_channel(message):
-    """`@channel`: Request an @channel in the current channel
+    """`!channel`: Request an @channel in the current channel
     """
     print(message.body)
     if has_perm_msg(message, 'channel.'+message.channel._body['name']):
-        message.send("[from <@{}>]: ".format(message._get_user_id()) + message.body['text'].replace("@channel", "<!channel>", 1))
+        message.send("[from <@{}>]: ".format(message._get_user_id()) + message.body['text'].replace("!channel", "<!channel>", 1))
     else:
         message.reply("@channel is disabled during the event -- if you need to notify the channel, please request assistance from the @slackmods .")
 
