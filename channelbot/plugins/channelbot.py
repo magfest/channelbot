@@ -13,10 +13,6 @@ def unhighlight(val):
         return val[:1] + "\u200D" + val[1:]
     return val
 
-@listen_to('^.*$')
-def echo(message):
-    print(message.body)
-
 @listen_to('@everyone')
 def at_everyone(message):
    """`@everyone`: Please don't use this here.
@@ -42,13 +38,6 @@ def at_channel(message):
         message.send("[from <@{}>]: ".format(message._get_user_id()) + message.body['text'].replace("@here", "<!here>", 1))
     else:
         message.reply("@here is disabled during the event -- if you need to notify the channel, please request assistance from the @slackmods .")
-
-@respond_to('^invite (.*)$', re.IGNORECASE)
-@require_perm('invite')
-def invite(message, email=None):
-    """`@invite`: Send a slack invitation to someone's email
-    """
-    message.send("/invite_people {}".format(email))
 
 @respond_to('^version$', re.IGNORECASE)
 def version(message):
