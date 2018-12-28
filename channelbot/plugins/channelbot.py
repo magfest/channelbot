@@ -13,7 +13,7 @@ def unhighlight(val):
         return val[:1] + "\u200D" + val[1:]
     return val
 
-@listen_to('')
+@listen_to('.*')
 def echo(message):
     print(message.body)
 
