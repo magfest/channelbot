@@ -6,6 +6,7 @@ initialcwd = os.getcwd()
 
 data = None
 perms = None
+blacklist = None
 
 def get_data():
     global data
@@ -30,6 +31,40 @@ def get_perms():
             perms = json.load(f)
 
     return perms
+
+def get_blacklist():
+    global blacklist
+    if blacklist is None:
+        try:
+            with open("channelbot_blacklist.json") as f:
+                blacklist = json.load(f)
+        except:
+            blacklist = []
+            save_blacklist(blacklist)
+    return blacklist
+
+def save_blacklist(new_blacklist=None):
+    global blacklist
+    if new_blacklist:
+        blacklist = new_blacklist
+    
+    with open("channelbot_blacklist.json", "w") as f:
+        json.dump(blacklist, f)
+
+def add_blacklist(entry):
+    blacklist = get_blacklist()
+    if not entry in blacklist:
+        blacklist.append(entry)
+    save_blacklist(blacklist)
+
+def remove_blacklist(entry):
+    blacklist = get_blacklist()
+    if entry in blacklist:
+        blacklist.remove(entry)
+    save_blacklist(blacklist)
+
+def test_blacklist(entry):
+    return entry in get_blacklist()
 
 def save_perms(new_perms=None):
     global perms

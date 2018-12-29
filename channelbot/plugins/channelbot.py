@@ -1,4 +1,4 @@
-from channelbot import initialcwd, get_data, save_data, has_perm, require_perm, grant_perm, revoke_perm, get_user_perms, has_perm_msg
+from channelbot import initialcwd, get_data, save_data, has_perm, require_perm, grant_perm, revoke_perm, get_user_perms, has_perm_msg, add_blacklist, remove_blacklist, get_blacklist
 from slackbot.bot import respond_to, listen_to, default_reply
 import subprocess
 import sys
@@ -20,22 +20,22 @@ def at_everyone(message):
    message.reply("@everyone is disabled in this workspace.")
    message.react("angry")
 
-@listen_to('!channel')
+@listen_to('@channel')
 def at_channel(message):
-    """`!channel`: Request an @channel in the current channel
+    """`@channel`: Request an @channel in the current channel
     """
     print(message.body)
-    if has_perm_msg(message, 'channel.'+message.channel._body['name']):
-        message.send("[from <@{}>]: ".format(message._get_user_id()) + message.body['text'].replace("!channel", "<!channel>", 1))
+    if not(test_blacklist(message.channel._body['name'])) or has_perm_msg(message, 'channel.'+message.channel._body['name']):
+        message.send("[from <@{}>]: ".format(message._get_user_id()) + message.body['text'].replace("@channel", "<!channel>", 1))
     else:
         message.reply("@channel is disabled during the event -- if you need to notify the channel, please request assistance from the @slackmods .")
 
-@listen_to('!here')
-def at_channel(message):
-    """`!here`: Request an @here in the current channel
+@listen_to('@here')
+def at_here(message):
+    """`@here`: Request an @here in the current channel
     """
-    if has_perm_msg(message, 'here.'+message.channel._body['name']):
-        message.send("[from <@{}>]: ".format(message._get_user_id()) + message.body['text'].replace("!here", "<!here>", 1))
+    if not(test_blacklist(message.channel._body['name'])) or has_perm_msg(message, 'here.'+message.channel._body['name']):
+        message.send("[from <@{}>]: ".format(message._get_user_id()) + message.body['text'].replace("@here", "<!here>", 1))
     else:
         message.reply("@here is disabled during the event -- if you need to notify the channel, please request assistance from the @slackmods .")
 
@@ -153,6 +153,31 @@ def revoke_permission(message, permission, user):
             message.reply("Permission `{}` not granted.".format(permission))
     else:
         message.reply("Cannot revoke permission you do not have")
+
+@respond_to('^blacklist ([a-z\-_.\*]+)', re.IGNORECASE)
+@require_perm('blacklist')
+def blacklist(message, channel):
+    """`blacklist <channelname>`: Add a channel to the blacklist, preventing most users from using @channel there.
+    """
+    add_blacklist(channel)
+    message.reply('Added {} to the blacklist. Only admins may use @channel or @here.'.format(channel))
+
+@respond_to('^whitelist ([a-z\-_.\*]+)', re.IGNORECASE)
+@require_perm('blacklist')
+def whitelist(message, channel):
+    """`whitelist <channelname>`: Remove a channel from the blacklist, allowing all users to use @channel there.
+    """
+    remove_blacklist(channel)
+    message.reply('Whitelisted {}. Anyone may now use @channel or @here.'.format(channel))
+
+@respond_to('^show blacklist$', re.IGNORECASE)
+def show_blacklist(message):
+    """`show blacklist`: List all currently blacklisted channels.
+    """
+    blacklist = get_blacklist()
+    msg = "The following channels are blacklisted:\n"
+    msg += "\n".join(blacklist)
+    message.reply(msg)
 
 @respond_to('^perm(?:ission)?s? (?:for )?<@(U\w+)>', re.IGNORECASE)
 @require_perm('grant.list')
