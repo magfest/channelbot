@@ -1,4 +1,4 @@
-from channelbot import initialcwd, get_data, save_data, has_perm, require_perm, grant_perm, revoke_perm, get_user_perms, has_perm_msg, add_blacklist, remove_blacklist, get_blacklist
+from channelbot import initialcwd, get_data, save_data, has_perm, require_perm, grant_perm, revoke_perm, get_user_perms, has_perm_msg, add_blacklist, remove_blacklist, get_blacklist, test_blacklist
 from slackbot.bot import respond_to, listen_to, default_reply
 import subprocess
 import sys
