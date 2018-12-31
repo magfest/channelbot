@@ -24,9 +24,17 @@ def at_everyone(message):
 def at_channel(message):
     """`@channel`: Request an @channel in the current channel
     """
-    print(message.body)
     if not(test_blacklist(message.channel._body['name'])) or has_perm_msg(message, 'channel.'+message.channel._body['name']):
         message.send("[from <@{}>]: ".format(message._get_user_id()) + message.body['text'].replace("@channel", "<!channel>", 1))
+    else:
+        message.reply("@channel is disabled during the event -- if you need to notify the channel, please request assistance from the @slackmods .")
+
+@listen_to('@test')
+def at_test(message):
+    """`@test`: Test whether you could use @channel in the current channel
+    """
+    if not(test_blacklist(message.channel._body['name'])) or has_perm_msg(message, 'channel.'+message.channel._body['name']):
+        message.send("[from <@{}>]: ".format(message._get_user_id()) + message.body['text'])
     else:
         message.reply("@channel is disabled during the event -- if you need to notify the channel, please request assistance from the @slackmods .")
 
